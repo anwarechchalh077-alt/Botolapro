@@ -5,6 +5,62 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>مباريات البطولة الاحترافية المغربية</title>
+  
+/* تحسين تصميم بطاقات المباريات */
+.match {
+  background: linear-gradient(135deg, #ffffff, #f4f8f5);
+  border: 1px solid #d6b75b;
+  border-radius: 16px;
+  padding: 18px;
+  margin: 16px 0;
+  box-shadow: 0 5px 14px rgba(11, 59, 46, 0.12);
+  transition: transform 0.2s ease;
+}
+
+.match .date {
+  background: #0b3b2e;
+  color: #f0d77a;
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+
+.match .teams {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-weight: bold;
+  font-size: 17px;
+  padding: 12px 0;
+}
+
+.match p {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.match p:nth-of-type(2) {
+  color: #0b6845;
+  font-weight: bold;
+}
+
+@media (max-width: 480px) {
+  main {
+    margin: 12px auto;
+    padding: 12px;
+  }
+
+  .match {
+    padding: 14px;
+  }
+
+  .match .teams {
+    font-size: 15px;
+  }
+}
 <style>
 body{margin:0;background:#f3f6f2;font-family:Arial,sans-serif;color:#183326}
 header{background:#0b3b2e;color:white;padding:24px 16px;text-align:center}
