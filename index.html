@@ -147,7 +147,25 @@ return `<tr>
 function newsHTML(){return `<div class="newsitem"><div class="newsicon">⚽</div><div><span class="pill">${lang==="ar"?"مشروع الموقع":lang==="fr"?"Projet du site":"Website project"}</span><h3>${tr("news1")}</h3><p>${tr("news1desc")}</p></div></div><div class="newsitem"><div class="newsicon">🏆</div><div><span class="pill">${lang==="ar"?"تحديثات":lang==="fr"?"Mises à jour":"Updates"}</span><h3>${tr("news2")}</h3><p>${tr("news2desc")}</p></div></div>`}
 function renderDynamic(){document.getElementById("homeMatches").innerHTML=matchHTML(clubs[0],clubs[1],tr("homeDate"),"—")+matchHTML(clubs[2],clubs[3],tr("homeDate"),"—");document.getElementById("allMatches").innerHTML=matchHTML(clubs[0],clubs[1],tr("homeDate"),"—")+matchHTML(clubs[2],clubs[3],tr("homeDate"),"—");document.getElementById("miniTable").innerHTML=demoTable.slice(0,5).map((r,i)=>`<div class="match"><div class="team" style="gap:7px"><span style="color:var(--muted);width:15px">${i+1}</span><span class="crest">${r.c.short}</span><span>${clubName(r.c)}</span></div><strong>—</strong></div>`).join("");document.getElementById("clubGrid").innerHTML=clubs.map(c=>`<div class="club"><div class="crest">${c.short}</div><strong>${clubName(c)}</strong><small>${lang==="ar"?"بطاقة النادي":lang==="fr"?"Fiche du club":"Club profile"}</small></div>`).join("");document.getElementById("homeNews").innerHTML=newsHTML();document.getElementById("newsList").innerHTML=newsHTML()}
 calculateStandings();
-function openTab(tab){currentTab=tab;document.querySelectorAll(".tabcontent").forEach(s=>s.classList.toggle("hidden",s.id!==tab));document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));window.scrollTo({top:0,behavior:"smooth"})}
+function openTab(tab){
+  const section=document.getElementById(tab);
+  if(!section){
+    console.error("Section not found:",tab);
+    return;
+  }
+
+  currentTab=tab;
+
+  document.querySelectorAll(".tabcontent").forEach(s=>{
+    s.classList.toggle("hidden",s.id!==tab);
+  });
+
+  document.querySelectorAll(".nav button").forEach(b=>{
+    b.classList.toggle("active",b.dataset.tab===tab);
+  });
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
 document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>openTab(b.dataset.tab)));document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>openTab(b.dataset.goto)));document.getElementById("language").addEventListener("change",e=>setLang(e.target.value));document.getElementById("year").textContent=new Date().getFullYear();renderDynamic();
 </script>
 </body>
