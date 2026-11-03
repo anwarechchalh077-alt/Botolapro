@@ -133,7 +133,12 @@ b.pts-a.pts || b.gd-a.gd || b.gf-a.gf
 function tableHTML(row,i){
 return `<tr>
 <td>${i+1}</td>
-<td>${clubName(row.c)}</td>
+<td>
+<div class="club-cell">
+${row.c.logo ? `<img src="${row.c.logo}" alt="${clubName(row.c)}" style="width:30px;height:30px;object-fit:contain;vertical-align:middle;margin-left:8px">` : ""}
+${clubName(row.c)}
+</div>
+</td>
 <td>${row.p}</td>
 <td>${row.w}</td>
 <td>${row.d}</td>
