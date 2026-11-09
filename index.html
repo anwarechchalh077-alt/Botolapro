@@ -262,7 +262,38 @@ function calculateStandings(){
     b.pts-a.pts || b.gd-a.gd || b.gf-a.gf
   );
  }
-function renderDynamic(){document.getElementById("homeMatches").innerHTML=matchHTML(clubs[0],clubs[1],tr("homeDate"),"—")+matchHTML(clubs[2],clubs[3],tr("homeDate"),"—");document.getElementById("allMatches").innerHTML=matchHTML(clubs[0],clubs[1],tr("homeDate"),"—")+matchHTML(clubs[2],clubs[3],tr("homeDate"),"—");document.getElementById("miniTable").innerHTML=demoTable.slice(0,5).map((r,i)=>`<div class="match"><div class="team" style="gap:7px"><span style="color:var(--muted);width:15px">${i+1}</span><span class="crest">${r.c.short}</span><span>${clubName(r.c)}</span></div><strong>—</strong></div>`).join("");document.getElementById("clubGrid").innerHTML=clubs.map(c=>`<div class="club"><div class="crest">${c.short}</div><strong>${clubName(c)}</strong><small>${lang==="ar"?"بطاقة النادي":lang==="fr"?"Fiche du club":"Club profile"}</small></div>`).join("");document.getElementById("homeNews").innerHTML=newsHTML();document.getElementById("newsList").innerHTML=newsHTML();document.getElementById("standings").innerHTML=demoTable.map((r,i)=>tableHTML(r,i)).join("");}
+function renderSavedMatches(){
+  const matches=getSavedMatches();
+  const container=document.getElementById("allMatches");
+
+  if(matches.length===0){
+    container.innerHTML="<p>لا توجد نتائج مسجلة حتى الآن.</p>";
+    return;
+  }
+
+  container.innerHTML=matches.map((m,i)=>`
+    <div class="match" style="padding:12px;margin:10px 0;border-bottom:1px solid var(--muted)">
+      <strong>${clubName(clubs[m.home])}</strong>
+      <strong style="font-size:20px">${m.hg} - ${m.ag}</strong>
+      <strong>${clubName(clubs[m.away])}</strong>
+      <button onclick="deleteMatch(${i})" style="background:#c0392b;color:white;padding:7px 12px;border:0;border-radius:6px">
+        حذف النتيجة
+      </button>
+    </div>
+  `).join("");
+}
+
+function deleteMatch(index){
+  if(!confirm("هل تريد حذف هذه النتيجة؟")) return;
+
+  const matches=getSavedMatches();
+  matches.splice(index,1);
+  localStorage.setItem("botolaMatches",JSON.stringify(matches));
+
+  calculateStandings();
+  renderDynamic();
+}
+function renderDynamic(){document.getElementById("homeMatches").innerHTML=matchHTML(clubs[0],clubs[1],tr("homeDate"),"—")+matchHTML(clubs[2],clubs[3],tr("homeDate"),"—");renderSavedMatches();document.getElementById("miniTable").innerHTML=demoTable.slice(0,5).map((r,i)=>`<div class="match"><div class="team" style="gap:7px"><span style="color:var(--muted);width:15px">${i+1}</span><span class="crest">${r.c.short}</span><span>${clubName(r.c)}</span></div><strong>—</strong></div>`).join("");document.getElementById("clubGrid").innerHTML=clubs.map(c=>`<div class="club"><div class="crest">${c.short}</div><strong>${clubName(c)}</strong><small>${lang==="ar"?"بطاقة النادي":lang==="fr"?"Fiche du club":"Club profile"}</small></div>`).join("");document.getElementById("homeNews").innerHTML=newsHTML();document.getElementById("newsList").innerHTML=newsHTML();document.getElementById("standings").innerHTML=demoTable.map((r,i)=>tableHTML(r,i)).join("");}
 calculateStandings();
 function openTab(tab){
   const section=document.getElementById(tab);
