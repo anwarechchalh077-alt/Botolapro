@@ -27,9 +27,9 @@
  <button class="active" data-tab="home" data-i="navHome">الرئيسية</button>
  <button data-tab="fixtures" data-i="navFixtures">المباريات</button>
  <button data-tab="table" data-i="navTable">الترتيب</button>
- 
-<button onclick="window.location.href='Matches.html'">المباريات والنتائج</button>
+ <button onclick="window.location.href='Matches.html'">المباريات والنتائج</button>
  <button data-tab="clubs" data-i="navClubs">الأندية</button>
+ <button data-tab="statistics">الإحصائيات</button>
  <button data-tab="news" data-i="navNews">الأخبار</button>
 </nav>
 <main class="main">
@@ -91,8 +91,39 @@
   <div class="section-head"><div><h2 data-i="clubsTitle">الأندية</h2><p data-i="clubsSub">بطاقات قابلة للتوسيع لكل نادٍ</p></div></div>
   <div class="card"><div class="clubgrid" id="clubGrid"></div></div>
  </section>
- <section id="news" class="tabcontent hidden">
-  <div class="section-head"><div><h2 data-i="newsTitle">الأخبار والتحليلات</h2><p data-i="newsSub">أضف أخبارك الأصلية مع ذكر المصادر عند الاقتباس</p></div></div>
+<section id="statistics" class="tabcontent hidden">
+  <div class="section-head">
+    <div>
+      <h2>إحصائيات البطولة</h2>
+      <p>أرقام البطولة محسوبة من النتائج المسجلة</p>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+    <div class="card" style="padding:15px">
+      <h3>🏆 أكثر الانتصارات</h3>
+      <strong id="statWins">—</strong>
+    </div>
+
+    <div class="card" style="padding:15px">
+      <h3>⚽ أكثر الأهداف</h3>
+      <strong id="statGoals">—</strong>
+    </div>
+
+    <div class="card" style="padding:15px">
+      <h3>🛡️ أقوى دفاع</h3>
+      <strong id="statDefense">—</strong>
+    </div>
+
+    <div class="card" style="padding:15px">
+      <h3>📊 مجموع الأهداف</h3>
+      <strong id="statTotal">0</strong>
+    </div>
+  </div>
+</section>
+
+<section id="news" class="tabcontent hidden">
+ <div class="section-head"><div><h2 data-i="newsTitle">الأخبار والتحليلات</h2><p data-i="newsSub">أضف أخبارك الأصلية مع ذكر المصادر عند الاقتباس</p></div></div>
   <div class="card" id="newsList"></div>
  </section>
 </main>
