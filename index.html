@@ -293,7 +293,62 @@ function deleteMatch(index){
   calculateStandings();
   renderDynamic();
 }
-function renderDynamic(){document.getElementById("homeMatches").innerHTML=matchHTML(clubs[0],clubs[1],tr("homeDate"),"—")+matchHTML(clubs[2],clubs[3],tr("homeDate"),"—");renderSavedMatches();document.getElementById("miniTable").innerHTML=demoTable.slice(0,5).map((r,i)=>`<div class="match"><div class="team" style="gap:7px"><span style="color:var(--muted);width:15px">${i+1}</span><span class="crest">${r.c.short}</span><span>${clubName(r.c)}</span></div><strong>—</strong></div>`).join("");document.getElementById("clubGrid").innerHTML=clubs.map(c=>`<div class="club"><div class="crest">${c.short}</div><strong>${clubName(c)}</strong><small>${lang==="ar"?"بطاقة النادي":lang==="fr"?"Fiche du club":"Club profile"}</small></div>`).join("");document.getElementById("homeNews").innerHTML=newsHTML();document.getElementById("newsList").innerHTML=newsHTML();document.getElementById("standings").innerHTML=demoTable.map((r,i)=>tableHTML(r,i)).join("");}
+function showClub(index){
+  const club=clubs[index];
+  const row=demoTable.find(r=>r.c===club);
+  const matches=getSavedMatches().filter(m=>
+    m.home===index || m.away===index
+  );
+
+  const results=matches.map(m=>`
+    <div class="match" style="padding:10px">
+      <span>${clubName(clubs[m.home])}</span>
+      <strong>${m.hg} - ${m.ag}</strong>
+      <span>${clubName(clubs[m.away])}</span>
+    </div>
+  `).join("");
+
+  const old=document.getElementById("clubProfile");
+  if(old) old.remove();
+
+  const modal=document.createElement("div");
+  modal.id="clubProfile";
+  modal.style="position:fixed;inset:0;background:#000c;z-index:9999;overflow:auto;padding:20px";
+
+  modal.innerHTML=`
+    <div style="background:var(--card);color:var(--text);max-width:550px;margin:30px auto;padding:20px;border-radius:15px">
+      <button onclick="closeClubProfile()" style="float:left">✕ إغلاق</button>
+      <div style="text-align:center;padding:25px">
+        ${club.logo?`<img src="${club.logo}" style="width:90px;height:90px;object-fit:contain">`:""}
+        <h2>${clubName(club)}</h2>
+        <p>${club.short}</p>
+      </div>
+      <h3>إحصائيات النادي</h3>
+      <p>المباريات: ${row.p}</p>
+      <p>الانتصارات: ${row.w}</p>
+      <p>التعادلات: ${row.d}</p>
+      <p>الهزائم: ${row.l}</p>
+      <p>الأهداف المسجلة: ${row.gf}</p>
+      <p>الأهداف المستقبلة: ${row.ga}</p>
+      <h3>النقاط: ${row.pts}</h3>
+      <h3>مباريات النادي</h3>
+      ${results || "<p>لا توجد مباريات مسجلة لهذا النادي.</p>"}
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+}
+
+function closeClubProfile(){
+  document.getElementById("clubProfile")?.remove();
+       }
+function renderDynamic(){document.getElementById("homeMatches").innerHTML=matchHTML(clubs[0],clubs[1],tr("homeDate"),"—")+matchHTML(clubs[2],clubs[3],tr("homeDate"),"—");renderSavedMatches();document.getElementById("miniTable").innerHTML=demoTable.slice(0,5).map((r,i)=>`<div class="match"><div class="team" style="gap:7px"><span style="color:var(--muted);width:15px">${i+1}</span><span class="crest">${r.c.short}</span><span>${clubName(r.c)}</span></div><strong>—</strong></div>`).join("");document.getElementById("clubGrid").innerHTML=clubs.map((c,i)=>`
+<div class="club" onclick="showClub(${i})" style="cursor:pointer">
+  ${c.logo ? `<img src="${c.logo}" alt="${clubName(c)}" style="width:55px;height:55px;object-fit:contain">` : `<div class="crest">${c.short}</div>`}
+  <strong>${clubName(c)}</strong>
+  <small>${lang==="ar"?"اضغط لعرض معلومات النادي":lang==="fr"?"Voir le club":"View club"}</small>
+</div>
+`).join("");document.getElementById("homeNews").innerHTML=newsHTML();document.getElementById("newsList").innerHTML=newsHTML();document.getElementById("standings").innerHTML=demoTable.map((r,i)=>tableHTML(r,i)).join("");}
 calculateStandings();
 function openTab(tab){
   const section=document.getElementById(tab);
