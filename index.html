@@ -30,7 +30,8 @@
  <button onclick="window.location.href='Matches.html'">المباريات والنتائج</button>
  <button data-tab="clubs" data-i="navClubs">الأندية</button>
  <button data-tab="statistics">الإحصائيات</button>
- <button data-tab="news" data-i="navNews">الأخبار</button>
+ <button data-tab="scorers">هدافو البطولة</button>
+<button data-tab="news" data-i="navNews">الأخبار</button>
 </nav>
 <main class="main">
  <div class="note" id="demoNotice">تنبيه: هذا نموذج أولي. أي نتائج أو ترتيب ظاهر أدناه تجريبي وغير رسمي، ويجب استبداله ببيانات موثوقة قبل النشر.</div>
@@ -121,7 +122,34 @@
     </div>
   </div>
 </section>
+<section id="scorers" class="tabcontent hidden">
+  <div class="section-head">
+    <div>
+      <h2>هدافو البطولة</h2>
+      <p>ترتيب اللاعبين حسب عدد الأهداف</p>
+    </div>
+  </div>
 
+  <div class="card" style="padding:15px">
+    <h3>⚽ إضافة هداف</h3>
+
+    <label>اسم اللاعب</label>
+    <input id="scorerName" type="text" placeholder="اسم اللاعب">
+
+    <label>النادي</label>
+    <select id="scorerClub"></select>
+
+    <label>عدد الأهداف</label>
+    <input id="scorerGoals" type="number" min="1" value="1">
+
+    <button onclick="saveScorer()">حفظ اللاعب</button>
+  </div>
+
+  <div class="card" style="padding:15px;margin-top:15px">
+    <h3>🏆 ترتيب الهدافين</h3>
+    <div id="scorersList"></div>
+  </div>
+</section>
 <section id="news" class="tabcontent hidden">
  <div class="section-head"><div><h2 data-i="newsTitle">الأخبار والتحليلات</h2><p data-i="newsSub">أضف أخبارك الأصلية مع ذكر المصادر عند الاقتباس</p></div></div>
   <div class="card" id="newsList"></div>
