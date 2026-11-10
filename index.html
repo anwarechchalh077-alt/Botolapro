@@ -300,13 +300,26 @@ function showClub(index){
     m.home===index || m.away===index
   );
 
-  const results=matches.map(m=>`
-    <div class="match" style="padding:10px">
+  const results=matches.slice(-5).reverse().map(m=>{
+  const isHome=m.home===index;
+  const goalsFor=isHome?m.hg:m.ag;
+  const goalsAgainst=isHome?m.ag:m.hg;
+
+  const status=goalsFor>goalsAgainst
+    ? {text:"فوز",color:"#16a34a"}
+    : goalsFor<goalsAgainst
+    ? {text:"خسارة",color:"#dc2626"}
+    : {text:"تعادل",color:"#64748b"};
+
+  return `
+    <div class="match" style="padding:12px;margin:8px 0">
       <span>${clubName(clubs[m.home])}</span>
       <strong>${m.hg} - ${m.ag}</strong>
       <span>${clubName(clubs[m.away])}</span>
+      <strong style="color:${status.color}">${status.text}</strong>
     </div>
-  `).join("");
+  `;
+}).join("");
 
   const old=document.getElementById("clubProfile");
   if(old) old.remove();
