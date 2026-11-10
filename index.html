@@ -452,6 +452,68 @@ function renderStatistics(){
   document.getElementById("statTotal").textContent =
     played.reduce((sum,r) => sum + r.gf, 0);
  }
+ 
+function getSavedScorers(){
+  return JSON.parse(localStorage.getItem("botolaScorers") || "[]");
+}
+
+function setupScorerForm(){
+  const select = document.getElementById("scorerClub");
+
+  select.innerHTML = clubs.map((c,i) =>
+    `<option value="${i}">${clubName(c)}</option>`
+  ).join("");
+
+  renderScorers();
+}
+
+function saveScorer(){
+  const name = document.getElementById("scorerName").value.trim();
+  const club = Number(document.getElementById("scorerClub").value);
+  const goals = Number(document.getElementById("scorerGoals").value);
+
+  if(!name || !Number.isInteger(goals) || goals < 1){
+    alert("أدخل اسم اللاعب وعدد أهداف صحيحًا");
+    return;
+  }
+
+  const scorers = getSavedScorers();
+  const existing = scorers.find(s =>
+    s.name.toLowerCase() === name.toLowerCase() && s.club === club
+  );
+
+  if(existing){
+    existing.goals += goals;
+  }else{
+    scorers.push({name, club, goals});
+  }
+
+  localStorage.setItem("botolaScorers", JSON.stringify(scorers));
+
+  document.getElementById("scorerName").value = "";
+  document.getElementById("scorerGoals").value = 1;
+
+  renderScorers();
+  alert("تم حفظ اللاعب بنجاح");
+}
+
+function renderScorers(){
+  const scorers = getSavedScorers()
+    .sort((a,b) => b.goals - a.goals);
+
+  document.getElementById("scorersList").innerHTML =
+    scorers.length
+    ? scorers.map((s,i) => `
+      <div class="match" style="padding:12px;margin:8px 0">
+        <strong>${i+1}.</strong>
+        <span>${s.name}</span>
+        <span>${clubName(clubs[s.club])}</span>
+        <strong>${s.goals} ⚽</strong>
+      </div>
+    `).join("")
+    : "<p>لا يوجد هدافون مسجلون بعد.</p>";
+ }
+   
  calculateStandings();
 function openTab(tab){
   const section=document.getElementById(tab);
@@ -475,6 +537,7 @@ function openTab(tab){
 document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>openTab(b.dataset.tab)));document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>openTab(b.dataset.goto)));document.getElementById("language").addEventListener("change",e=>setLang(e.target.value));document.getElementById("year").textContent=new Date().getFullYear();
 
 setupMatchForm();
+setupScorerForm();
 calculateStandings();
 renderDynamic();
 </script>
