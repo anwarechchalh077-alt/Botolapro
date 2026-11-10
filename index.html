@@ -149,11 +149,33 @@
     <h3>🏆 ترتيب الهدافين</h3>
     <div id="scorersList"></div>
   </div>
-</section>
+
 <section id="news" class="tabcontent hidden">
- <div class="section-head"><div><h2 data-i="newsTitle">الأخبار والتحليلات</h2><p data-i="newsSub">أضف أخبارك الأصلية مع ذكر المصادر عند الاقتباس</p></div></div>
-  <div class="card" id="newsList"></div>
- </section>
+  <div class="section-head">
+    <div>
+      <h2>الأخبار والتحليلات</h2>
+      <p>آخر أخبار البطولة المغربية</p>
+    </div>
+  </div>
+
+  <div class="card" style="padding:15px">
+    <h3>📰 إضافة خبر جديد</h3>
+
+    <label>عنوان الخبر</label>
+    <input id="newsTitleInput" type="text" placeholder="اكتب عنوان الخبر">
+
+    <label>رابط صورة الخبر</label>
+    <input id="newsImageInput" type="url" placeholder="https://example.com/image.jpg">
+
+    <label>تفاصيل الخبر</label>
+    <textarea id="newsContentInput" rows="5" placeholder="اكتب تفاصيل الخبر هنا"></textarea>
+
+    <button onclick="saveNews()">نشر الخبر</button>
+  </div>
+
+  <div class="card" id="newsList" style="padding:15px;margin-top:15px"></div>
+</section>
+ 
 </main>
 <footer class="footer"><div><strong>BOTOLA PRO</strong> · <span data-i="footerText">مشروع مستقل من صنع مشجعين لكرة القدم المغربية.</span></div><div data-i="disclaimer">هذا الموقع غير رسمي ولا يمثل العصبة الوطنية لكرة القدم الاحترافية أو INWI. الشعارات والعلامات التجارية لأصحابها.</div><div>© <span id="year"></span> Botola Fan Project</div></footer>
 <script>
@@ -229,7 +251,61 @@ ${clubName(row.c)}
 function newsHTML(){
 return `<div class="newsitem"><div class="newsicon">⚽</div><div><span class="pill">${lang==="ar"?"مشروع الموقع":lang==="fr"?"Projet du site":"Website project"}</span><h3>${tr("news1")}</h3><p>${tr("news1desc")}</p></div></div><div class="newsitem"><div class="newsicon">🏆</div><div><span class="pill">${lang==="ar"?"تحديثات":lang==="fr"?"Mises à jour":"Updates"}</span><h3>${tr("news2")}</h3><p>${tr("news2desc")}</p></div></div>`;
  }
-function getSavedMatches(){
+
+function getSavedNews(){
+  return JSON.parse(localStorage.getItem("botolaNews") || "[]");
+}
+
+function saveNews(){
+  const title = document.getElementById("newsTitleInput").value.trim();
+  const image = document.getElementById("newsImageInput").value.trim();
+  const content = document.getElementById("newsContentInput").value.trim();
+
+  if(!title || !content){
+    alert("أدخل عنوان الخبر وتفاصيله");
+    return;
+  }
+
+  const news = getSavedNews();
+
+  news.unshift({
+    title,
+    image,
+    content,
+    date: new Date().toLocaleDateString("ar-MA")
+  });
+
+  localStorage.setItem("botolaNews", JSON.stringify(news));
+
+  document.getElementById("newsTitleInput").value = "";
+  document.getElementById("newsImageInput").value = "";
+  document.getElementById("newsContentInput").value = "";
+
+  renderNews();
+  alert("تم نشر الخبر بنجاح");
+}
+
+function renderNews(){
+  const news = getSavedNews();
+
+  document.getElementById("newsList").innerHTML =
+    news.length ? news.map((n,i) => `
+      <div class="newsitem" style="margin-bottom:18px">
+        ${n.image ? `<img src="${n.image}" alt="" style="width:100%;max-height:220px;object-fit:cover;border-radius:12px">` : ""}
+        <h3>${n.title}</h3>
+        <small>${n.date}</small>
+        <p style="white-space:pre-wrap">${n.content}</p>
+        <button onclick="deleteNews(${i})">حذف الخبر</button>
+      </div>
+    `).join("") : "<p>لا توجد أخبار منشورة بعد.</p>";
+}
+function deleteNews(index){
+  const news = getSavedNews();
+  news.splice(index,1);
+  localStorage.setItem("botolaNews", JSON.stringify(news));
+  renderNews();
+   }
+ function getSavedMatches(){
   try {
     return JSON.parse(localStorage.getItem("botolaMatches") || "[]");
   } catch(e) {
@@ -420,7 +496,7 @@ function renderDynamic(){document.getElementById("homeMatches").innerHTML=matchH
   <strong>${clubName(c)}</strong>
   <small>${lang==="ar"?"اضغط لعرض معلومات النادي":lang==="fr"?"Voir le club":"View club"}</small>
 </div>
-`).join("");document.getElementById("homeNews").innerHTML=newsHTML();document.getElementById("newsList").innerHTML=newsHTML();document.getElementById("standings").innerHTML=demoTable.map((r,i)=>tableHTML(r,i)).join("");renderStatistics();}
+`).join("");document.getElementById("homeNews").innerHTML=newsHTML();renderNews();document.getElementById("standings").innerHTML=demoTable.map((r,i)=>tableHTML(r,i)).join("");renderStatistics();}
 function renderStatistics(){
   const played = demoTable.filter(r => r.p > 0);
 
