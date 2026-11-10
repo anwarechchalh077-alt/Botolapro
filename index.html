@@ -268,6 +268,10 @@ function newsHTML(){
         <h3>${n.title}</h3>
         <p>${n.content.length > 100 ? n.content.slice(0,100)+"..." : n.content}</p>
         <strong style="color:#145844">اقرأ الخبر كاملًا ←</strong>
+      <button onclick="event.stopPropagation();shareNews(${i})"
+style="background:#25D366;color:white;border:0;padding:9px 13px;border-radius:8px;margin-top:8px;cursor:pointer">
+📲 مشاركة عبر WhatsApp
+</button>
       </div>
     </div>
   `).join("");
@@ -348,7 +352,16 @@ function openNews(index){
 
   document.body.appendChild(modal);
  }
- 
+ function shareNews(index){
+  const news = getSavedNews();
+  const n = news[index];
+  if(!n) return;
+
+  const url = "https://anwarechchalh077-alt.github.io/Botolapro/";
+  const text = `${n.title}\n\n${n.content}\n\n${url}`;
+
+  window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+ }
 function deleteNews(index){
   const news = getSavedNews();
   news.splice(index,1);
