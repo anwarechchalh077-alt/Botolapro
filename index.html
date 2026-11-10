@@ -392,8 +392,39 @@ function renderDynamic(){document.getElementById("homeMatches").innerHTML=matchH
   <strong>${clubName(c)}</strong>
   <small>${lang==="ar"?"اضغط لعرض معلومات النادي":lang==="fr"?"Voir le club":"View club"}</small>
 </div>
-`).join("");document.getElementById("homeNews").innerHTML=newsHTML();document.getElementById("newsList").innerHTML=newsHTML();document.getElementById("standings").innerHTML=demoTable.map((r,i)=>tableHTML(r,i)).join("");}
-calculateStandings();
+`).join("");document.getElementById("homeNews").innerHTML=newsHTML();document.getElementById("newsList").innerHTML=newsHTML();document.getElementById("standings").innerHTML=demoTable.map((r,i)=>tableHTML(r,i)).join("");renderStatistics();}
+function renderStatistics(){
+  const played = demoTable.filter(r => r.p > 0);
+
+  if(played.length === 0){
+    document.getElementById("statWins").textContent = "—";
+    document.getElementById("statGoals").textContent = "—";
+    document.getElementById("statDefense").textContent = "—";
+    document.getElementById("statTotal").textContent = "0";
+    return;
+  }
+
+  const maxWins = Math.max(...played.map(r => r.w));
+  const maxGoals = Math.max(...played.map(r => r.gf));
+  const minGoals = Math.min(...played.map(r => r.ga));
+
+  const wins = played.filter(r => r.w === maxWins);
+  const goals = played.filter(r => r.gf === maxGoals);
+  const defense = played.filter(r => r.ga === minGoals);
+
+  document.getElementById("statWins").textContent =
+    wins.map(r => clubName(r.c)).join("، ") + " (" + maxWins + ")";
+
+  document.getElementById("statGoals").textContent =
+    goals.map(r => clubName(r.c)).join("، ") + " (" + maxGoals + ")";
+
+  document.getElementById("statDefense").textContent =
+    defense.map(r => clubName(r.c)).join("، ") + " (" + minGoals + ")";
+
+  document.getElementById("statTotal").textContent =
+    played.reduce((sum,r) => sum + r.gf, 0);
+ }
+ calculateStandings();
 function openTab(tab){
   const section=document.getElementById(tab);
   if(!section){
