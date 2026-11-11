@@ -411,13 +411,29 @@ function renderPredictionResults(){
 
   const total = data.home + data.draw + data.away;
 
-  results.innerHTML = `
-    <h3>📊 نتائج تصويت الجماهير</h3>
-    <p>إجمالي الأصوات: ${total}</p>
-    <p>فوز الفريق الأول: ${data.home}</p>
-    <p>التعادل: ${data.draw}</p>
-    <p>فوز الفريق الثاني: ${data.away}</p>
-  `;
+  const homePercent = total ? Math.round(data.home / total * 100) : 0;
+const drawPercent = total ? Math.round(data.draw / total * 100) : 0;
+const awayPercent = total ? 100 - homePercent - drawPercent : 0;
+
+results.innerHTML = `
+  <h3>📊 نتائج تصويت الجماهير</h3>
+  <p>إجمالي الأصوات: ${total}</p>
+
+  <p>فوز الفريق الأول: ${homePercent}% (${data.home} صوت)</p>
+  <div style="background:#ddd;height:12px;border-radius:10px;overflow:hidden">
+    <div style="background:#16a34a;width:${homePercent}%;height:100%"></div>
+  </div>
+
+  <p>التعادل: ${drawPercent}% (${data.draw} صوت)</p>
+  <div style="background:#ddd;height:12px;border-radius:10px;overflow:hidden">
+    <div style="background:#e5a323;width:${drawPercent}%;height:100%"></div>
+  </div>
+
+  <p>فوز الفريق الثاني: ${awayPercent}% (${data.away} صوت)</p>
+  <div style="background:#ddd;height:12px;border-radius:10px;overflow:hidden">
+    <div style="background:#2563eb;width:${awayPercent}%;height:100%"></div>
+  </div>
+`;
 }
 
 function votePrediction(choice){
