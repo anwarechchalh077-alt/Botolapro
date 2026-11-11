@@ -150,6 +150,35 @@
     <div id="scorersList"></div>
   </div>
 </section>
+
+<section id="predictions" class="tabcontent hidden">
+  <div class="section-head">
+    <div>
+      <h2>⚽ توقعات المباريات</h2>
+      <p>توقع نتيجة المباراة وشارك رأيك مع الجماهير</p>
+    </div>
+  </div>
+
+  <div class="card" style="padding:15px">
+    <h3>اختر المباراة</h3>
+    <select id="predictionMatch" onchange="renderPredictionResults()" style="width:100%;padding:12px;border-radius:8px">
+      <option value="">اختر مباراة</option>
+      <option value="الرجاء الرياضي × الوداد الرياضي">الرجاء الرياضي × الوداد الرياضي</option>
+      <option value="الجيش الملكي × نهضة بركان">الجيش الملكي × نهضة بركان</option>
+    </select>
+
+    <h3>ما توقعك؟</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button onclick="votePrediction('home')">فوز الفريق الأول</button>
+      <button onclick="votePrediction('draw')">تعادل</button>
+      <button onclick="votePrediction('away')">فوز الفريق الثاني</button>
+    </div>
+
+    <p id="predictionMessage"></p>
+    <div id="predictionResults"></div>
+  </div>
+</section>
+
 <section id="news" class="tabcontent hidden">
   <div class="section-head">
     <div>
@@ -362,7 +391,68 @@ function openNews(index){
 
   window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
  }
-function deleteNews(index){
+function getPredictionData(){
+  return JSON.parse(localStorage.getItem("botolaPredictions") || "{}");
+}
+
+function renderPredictionResults(){
+  const match = document.getElementById("predictionMatch").value;
+  const results = document.getElementById("predictionResults");
+
+  if(!match){
+    results.innerHTML = "اختر مباراة لعرض التوقعات.";
+    return;
+  }
+
+  const data = getPredictionData()[match] || {
+    home:0, draw:0, away:0
+  };
+
+  const total = data.home + data.draw + data.away;
+
+  results.innerHTML = `
+    <h3>📊 نتائج تصويت الجماهير</h3>
+    <p>إجمالي الأصوات: ${total}</p>
+    <p>فوز الفريق الأول: ${data.home}</p>
+    <p>التعادل: ${data.draw}</p>
+    <p>فوز الفريق الثاني: ${data.away}</p>
+  `;
+}
+
+function votePrediction(choice){
+  const match = document.getElementById("predictionMatch").value;
+  const message = document.getElementById("predictionMessage");
+
+  if(!match){
+    message.textContent = "يرجى اختيار مباراة أولاً.";
+    return;
+  }
+
+  const votes = JSON.parse(
+    localStorage.getItem("botolaPredictionVotes") || "{}"
+  );
+
+  if(votes[match]){
+    message.textContent = "لقد صوتّ لهذه المباراة من قبل.";
+    return;
+  }
+
+  const data = getPredictionData();
+
+  if(!data[match]){
+    data[match] = {home:0, draw:0, away:0};
+  }
+
+  data[match][choice]++;
+  votes[match] = choice;
+
+  localStorage.setItem("botolaPredictions", JSON.stringify(data));
+  localStorage.setItem("botolaPredictionVotes", JSON.stringify(votes));
+
+  message.textContent = "تم تسجيل توقعك بنجاح! ⚽";
+  renderPredictionResults();
+                  }
+ function deleteNews(index){
   const news = getSavedNews();
   news.splice(index,1);
   localStorage.setItem("botolaNews", JSON.stringify(news));
