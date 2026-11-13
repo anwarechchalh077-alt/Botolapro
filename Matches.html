@@ -168,6 +168,14 @@ function showMatchPredictions3(){
   showMatchPredictions2();
   showMatchPredictions3();
   });
+window.addEventListener("storage", function(event){
+  if(event.key === "botolaPredictions"){
+    showMatchPredictions();
+    showMatchPredictions2();
+    showMatchPredictions3();
+    showPopularClubs();
+  }
+});
 </script>
 <body>
 <header>
