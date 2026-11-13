@@ -134,9 +134,39 @@ function showMatchPredictions2(){
     <p>إجمالي الأصوات: ${total}</p>
   `;
     }
+function showMatchPredictions3(){
+  const match = "المغرب الفاسي × نهضة بركان";
+
+  const allVotes = JSON.parse(
+    localStorage.getItem("botolaPredictions") || "{}"
+  );
+
+  const data = allVotes[match] || {
+    home: 0,
+    draw: 0,
+    away: 0
+  };
+
+  const total = data.home + data.draw + data.away;
+
+  const home = total ? Math.round(data.home / total * 100) : 0;
+  const draw = total ? Math.round(data.draw / total * 100) : 0;
+  const away = 100 - home - draw;
+
+  document.getElementById("voteResults3").innerHTML = `
+    <p>فوز المغرب الفاسي: ${home}%</p>
+    <progress value="${home}" max="100"></progress>
+    <p>التعادل: ${draw}%</p>
+    <progress value="${draw}" max="100"></progress>
+    <p>فوز نهضة بركان: ${away}%</p>
+    <progress value="${away}" max="100"></progress>
+    <p>إجمالي الأصوات: ${total}</p>
+  `;
+                          }
   window.addEventListener("load", function(){
   showMatchPredictions();
   showMatchPredictions2();
+  showMatchPredictions3();
   });
 </script>
 <body>
@@ -174,6 +204,10 @@ function showMatchPredictions2(){
 <p>الساعة 19:00 بتوقيت المغرب</p>
 <p>النتيجة: لم تُحدَّد بعد</p>
 <p>الملعب: يُعلن لاحقًا</p>
+<div class="prediction-display">
+  <h4>⚽ توقعات الجماهير</h4>
+  <div id="voteResults3">جاري تحميل التوقعات...</div>
+</div>
 </div>
 <p class="note">تنبيه: هذه مواعيد أولية وليست نتائج مباشرة. تحقق من البرنامج الرسمي للجامعة أو العصبة قبل الاعتماد عليها، فقد تتغير المواعيد.</p>
 <p><a href="https://lnfp.ma/">الموقع الرسمي للعصبة الوطنية لكرة القدم الاحترافية</a></p>
