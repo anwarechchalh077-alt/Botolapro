@@ -105,9 +105,39 @@ function showMatchPredictions(){
     <p>إجمالي الأصوات: ${total}</p>
   `;
 }
-window.addEventListener("load", function(){
+function showMatchPredictions2(){
+  const match = "الجيش الملكي × اتحاد طنجة";
+
+  const allVotes = JSON.parse(
+    localStorage.getItem("botolaPredictions") || "{}"
+  );
+
+  const data = allVotes[match] || {
+    home: 0,
+    draw: 0,
+    away: 0
+  };
+
+  const total = data.home + data.draw + data.away;
+
+  const home = total ? Math.round(data.home / total * 100) : 0;
+  const draw = total ? Math.round(data.draw / total * 100) : 0;
+  const away = 100 - home - draw;
+
+  document.getElementById("voteResults2").innerHTML = `
+    <p>فوز الجيش الملكي: ${home}%</p>
+    <progress value="${home}" max="100"></progress>
+    <p>التعادل: ${draw}%</p>
+    <progress value="${draw}" max="100"></progress>
+    <p>فوز اتحاد طنجة: ${away}%</p>
+    <progress value="${away}" max="100"></progress>
+    <p>إجمالي الأصوات: ${total}</p>
+  `;
+    }
+  window.addEventListener("load", function(){
   showMatchPredictions();
-});
+  showMatchPredictions2();
+  });
 </script>
 <body>
 <header>
@@ -133,6 +163,10 @@ window.addEventListener("load", function(){
 <p>الساعة 19:00 بتوقيت المغرب</p>
 <p>النتيجة: لم تُحدَّد بعد</p>
 <p>الملعب: يُعلن لاحقًا</p>
+<div class="prediction-display">
+  <h4>⚽ توقعات الجماهير</h4>
+  <div id="voteResults2">جاري تحميل التوقعات...</div>
+</div>
 </div>
 <div class="match">
 <div class="date">29 أكتوبر 2026</div>
