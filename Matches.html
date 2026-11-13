@@ -75,6 +75,39 @@ a{color:#0b6845}
 button{background:#0b6845;color:white;border:0;border-radius:8px;padding:10px 14px;font-size:16px}
 </style>
 </head>
+<script>
+function showMatchPredictions(){
+  const match = "الرجاء الرياضي × حسنية أكادير";
+
+  const allVotes = JSON.parse(
+    localStorage.getItem("botolaPredictions") || "{}"
+  );
+
+  const data = allVotes[match] || {
+    home: 0,
+    draw: 0,
+    away: 0
+  };
+
+  const total = data.home + data.draw + data.away;
+
+  const home = total ? Math.round(data.home / total * 100) : 0;
+  const draw = total ? Math.round(data.draw / total * 100) : 0;
+  const away = 100 - home - draw;
+
+  document.getElementById("voteResults1").innerHTML = `
+    <p>فوز الرجاء: ${home}%</p>
+    <progress value="${home}" max="100"></progress>
+    <p>التعادل: ${draw}%</p>
+    <progress value="${draw}" max="100"></progress>
+    <p>فوز حسنية أكادير: ${away}%</p>
+    <progress value="${away}" max="100"></progress>
+    <p>إجمالي الأصوات: ${total}</p>
+  `;
+}
+
+showMatchPredictions();
+</script>
 <body>
 <header>
 <h1>⚽ Botola Pro INWI</h1>
@@ -88,6 +121,10 @@ button{background:#0b6845;color:white;border:0;border-radius:8px;padding:10px 14
 <p>الساعة 19:00 بتوقيت المغرب</p>
 <p>النتيجة: لم تُحدَّد بعد</p>
 <p>الملعب: يُعلن لاحقًا</p>
+<div class="prediction-display" data-match="الرجاء الرياضي × حسنية أكادير">
+  <h4>⚽ توقعات الجماهير</h4>
+  <div id="voteResults1">جاري تحميل التوقعات...</div>
+</div>
 </div>
 <div class="match">
 <div class="date">28 أكتوبر 2026</div>
