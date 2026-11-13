@@ -212,6 +212,52 @@ function showMatchPredictions3(){
 <p class="note">تنبيه: هذه مواعيد أولية وليست نتائج مباشرة. تحقق من البرنامج الرسمي للجامعة أو العصبة قبل الاعتماد عليها، فقد تتغير المواعيد.</p>
 <p><a href="https://lnfp.ma/">الموقع الرسمي للعصبة الوطنية لكرة القدم الاحترافية</a></p>
 <p><a href="index.html">العودة إلى الصفحة الرئيسية</a></p>
+<div class="match" style="margin-top:20px">
+  <h2>🏆 الأندية الأكثر شعبية</h2>
+  <p>حسب توقعات الجماهير</p>
+  <div id="popularClubs">جاري حساب الترتيب...</div>
+</div>
 </main>
+<script>
+function showPopularClubs(){
+  const allVotes = JSON.parse(
+    localStorage.getItem("botolaPredictions") || "{}"
+  );
+
+  const clubs = {
+    "الرجاء الرياضي": 0,
+    "حسنية أكادير": 0,
+    "الجيش الملكي": 0,
+    "اتحاد طنجة": 0,
+    "المغرب الفاسي": 0,
+    "نهضة بركان": 0
+  };
+
+  const matches = [
+    ["الرجاء الرياضي × حسنية أكادير", "الرجاء الرياضي", "حسنية أكادير"],
+    ["الجيش الملكي × اتحاد طنجة", "الجيش الملكي", "اتحاد طنجة"],
+    ["المغرب الفاسي × نهضة بركان", "المغرب الفاسي", "نهضة بركان"]
+  ];
+
+  matches.forEach(([key, home, away]) => {
+    const votes = allVotes[key] || {};
+    clubs[home] += Number(votes.home || 0);
+    clubs[away] += Number(votes.away || 0);
+  });
+
+  const sorted = Object.entries(clubs)
+    .sort((a,b) => b[1] - a[1]);
+
+  document.getElementById("popularClubs").innerHTML =
+    sorted.map(([name, votes], index) => `
+      <p>
+        ${index + 1}. ${name}
+        <strong style="float:left">${votes} صوت</strong>
+      </p>
+    `).join("");
+}
+
+window.addEventListener("load", showPopularClubs);
+</script>
 </body>
 </html>
